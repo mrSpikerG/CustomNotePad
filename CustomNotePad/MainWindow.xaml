@@ -1,0 +1,67 @@
+﻿<Window x:Class="CustomNotePad.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        
+        xmlns:local="clr-namespace:CustomNotePad" d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
+        mc:Ignorable="d"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Title="MainWindow" Height="450" Width="800">
+    <!--:domain="clr-namespace:MaterialDesignDemo.Domain"-->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="0.15*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.3*"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <!-- and here's another -->
+        <ListBox ItemsSource="{Binding Path=CollectionItems}" SelectedItem="{Binding SelectedModel}" Grid.IsSharedSizeScope="True">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type local:TextComponent}">
+                    <Border x:Name="Border" Padding="8" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition SharedSizeGroup="Checkerz" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <ToggleButton VerticalAlignment="Center" Style="{StaticResource MaterialDesignActionLightToggleButton}" Content="{Binding Code}" />
+                            <StackPanel Margin="8 0 0 0" Grid.Column="1">
+                                <TextBlock Text="{Binding Name}" FontWeight="Bold" />
+                                <TextBlock Text="{Binding Description}" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource MaterialDesignSelection}" />
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
+
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ListBox>
+
+
+
+        <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}" Text="{Binding SelectedModel.Text, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Margin="10 90 10 10"  
+        Height="250" Grid.Column="1" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" materialDesign:HintAssist.Hint="Введите заметку" IsEnabled="True" />
+
+        <TextBox Grid.Column="1" Style="{StaticResource MaterialDesignOutlinedTextBox}" Text="{Binding SelectedModel.Name, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Height="60" Width="150" Margin="10 10 400 10" TextWrapping="Wrap" MaxLength="16"
+    materialDesign:TextFieldAssist.CharacterCounterVisibility="{Binding Path=IsChecked, ElementName=MaterialDesignOutlinedTextBoxTextCountComboBox, Converter={StaticResource BooleanToVisibilityConverter}}"
+    VerticalScrollBarVisibility="Auto" materialDesign:HintAssist.Hint="Название" />
+
+        <TextBox Grid.Column="1" Style="{StaticResource MaterialDesignOutlinedTextBox}" Text="{Binding SelectedModel.Description, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Height="60" Width="150" Margin="400 10 10 10" TextWrapping="Wrap" MaxLength="16"
+    materialDesign:TextFieldAssist.CharacterCounterVisibility="{Binding Path=IsChecked, ElementName=MaterialDesignOutlinedTextBoxTextCountComboBox, Converter={StaticResource BooleanToVisibilityConverter}}"
+    VerticalScrollBarVisibility="Auto" materialDesign:HintAssist.Hint="Описание" />
+        
+        <Button Grid.Row="1" Grid.Column="1" Margin="450 10 10 10" Style="{StaticResource MaterialDesignOutlinedSecondaryLightButton}" Command="{Binding AddCommand}" Content="Add" IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
+        <Button Grid.Row="1" Grid.Column="1" Margin="10 10 450 10" Style="{StaticResource MaterialDesignOutlinedSecondaryLightButton}" Command="{Binding DeleteCommand}" Content="Remove" IsEnabled="{Binding DataContext.ControlsEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}" />
+    </Grid>
+</Window>
